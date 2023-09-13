@@ -18,6 +18,10 @@ func showSnippet(w http.ResponseWriter, r *http.Request) {
 }
 
 func createSnippet(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(405)
+		w.Write([]byte("GET-method is prohibited!"))
+	}
 	w.Write([]byte("Form for creating a new note"))
 }
 
