@@ -1,2 +1,2 @@
-#Snippetbox#
+#Snippetbox
 Веб приложение на **Go**
