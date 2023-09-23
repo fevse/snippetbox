@@ -26,8 +26,14 @@ func main() {
 
 	mux.Handle("/static/", http.StripPrefix("/static/", fileServer))
 
+	srv := &http.Server{
+		Addr: *addr,
+		ErrorLog: errorLog,
+		Handler: mux,
+	}
+
 	infoLog.Printf("Running a web-server on %s", *addr)
-	err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
 	errorLog.Fatal(err)
 }
 
