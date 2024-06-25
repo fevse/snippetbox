@@ -3,23 +3,15 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 
-	"fevse/snippetbox/pkg/models/mysql"
+	h "github.com/fevse/snippetbox/internal/httpserver"
+	"github.com/fevse/snippetbox/pkg/models/mysql"
 
 	_ "github.com/go-sql-driver/mysql"
 )
-
-type application struct {
-	errorLog *log.Logger
-	infoLog *log.Logger
-	snippets *mysql.SnippetModel
-	templateCache map[string]*template.Template
-}
 
 func main() {
 	addr := flag.String("addr", ":4000", "Net adress HTTP")
@@ -35,22 +27,17 @@ func main() {
 	}
 	defer db.Close()
 
-	templateCache, err := newTemplateCache("./ui/html")
+	templateCache, err := h.NewTemplateCache("./ui/html")
 	if err != nil {
 		errorLog.Fatal(err)
 	}
 
-	app := &application{
-		errorLog: errorLog,
-		infoLog: infoLog,
-		snippets: &mysql.SnippetModel{DB: db},
-		templateCache: templateCache,
-	}
+	app := h.NewApp(errorLog, infoLog, &mysql.SnippetModel{DB: db}, templateCache,)
 
 	srv := &http.Server{
 		Addr: *addr,
 		ErrorLog: errorLog,
-		Handler: app.routes(),
+		Handler: app.Routes(),
 	}
 
 	infoLog.Printf("Running a web-server on %s", *addr)
@@ -67,28 +54,4 @@ func openDB(dsn string) (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
-}
-
-type neuteredFileSistem struct {
-	fs http.FileSystem
-}
-
-func (nfs neuteredFileSistem) Open(path string) (http.File, error) {
-	f, err := nfs.fs.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	s, err := f.Stat()
-	if s.IsDir() {
-		index := filepath.Join(path, "index.html")
-		if _, err := nfs.fs.Open(index); err != nil {
-			closeErr := f.Close()
-			if closeErr != nil {
-				return nil, closeErr
-			}
-			return nil, err
-		}
-	}
-	return f, nil
 }
