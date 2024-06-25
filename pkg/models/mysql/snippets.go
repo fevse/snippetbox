@@ -3,7 +3,8 @@ package mysql
 import (
 	"database/sql"
 	"errors"
-	"fevse/snippetbox/pkg/models"
+
+	"github.com/fevse/snippetbox/pkg/models"
 )
 
 type SnippetModel struct {
