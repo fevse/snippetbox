@@ -32,7 +32,7 @@ func (app *Application) showSnippet(w http.ResponseWriter, r *http.Request) {
 		app.NotFound(w)
 		return
 	}
-	
+
 	s, err := app.snippets.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -67,5 +67,4 @@ func (app *Application) createSnippet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
-	//w.Write([]byte("Form for creating a new note"))
 }

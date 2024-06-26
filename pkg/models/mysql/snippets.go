@@ -21,18 +21,16 @@ func (m *SnippetModel) Get(id int) (*models.Snippet, error) {
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
-		} else {
-			return nil, err
 		}
+		return nil, err
 	}
-
 	return s, nil
 }
 
 func (m *SnippetModel) Insert(title, content, expires string) (int, error) {
 	stmt := `INSERT INTO snippets (title, content, created, expires) 
 	VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
-	
+
 	result, err := m.DB.Exec(stmt, title, content, expires)
 	if err != nil {
 		return 0, err
@@ -52,7 +50,7 @@ func (m *SnippetModel) Latest() ([]*models.Snippet, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	defer rows.Close()
 
 	var snippets []*models.Snippet

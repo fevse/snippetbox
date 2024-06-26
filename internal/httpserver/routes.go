@@ -10,23 +10,23 @@ import (
 )
 
 type Application struct {
-	errorLog *log.Logger
-	infoLog *log.Logger
-	snippets *mysql.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *mysql.SnippetModel
 	templateCache map[string]*template.Template
 }
 
-func NewApp(errorLog *log.Logger, infoLog *log.Logger, snippets *mysql.SnippetModel, templateCache map[string]*template.Template) *Application {
-	return &Application {
-		errorLog: errorLog,
-		infoLog: infoLog,
-		snippets: snippets,
-		templateCache:templateCache,
+func NewApp(errorLog *log.Logger, infoLog *log.Logger, snippets *mysql.SnippetModel,
+	templateCache map[string]*template.Template) *Application {
+	return &Application{
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      snippets,
+		templateCache: templateCache,
 	}
 }
 
 func (app *Application) Routes() *http.ServeMux {
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/snippet", app.showSnippet)
@@ -38,7 +38,6 @@ func (app *Application) Routes() *http.ServeMux {
 
 	return mux
 }
-
 
 type neuteredFileSistem struct {
 	fs http.FileSystem

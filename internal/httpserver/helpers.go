@@ -24,7 +24,7 @@ func (app *Application) NotFound(w http.ResponseWriter) {
 func (app *Application) render(w http.ResponseWriter, _ *http.Request, name string, td *templateData) {
 	ts, ok := app.templateCache[name]
 	if !ok {
-		app.serverError(w, fmt.Errorf("Template %s is not exist", name))
+		app.serverError(w, fmt.Errorf("template %s is not exist", name))
 		return
 	}
 
